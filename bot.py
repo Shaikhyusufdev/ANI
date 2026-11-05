@@ -225,8 +225,13 @@ async def group_msg(update: Update, context: ContextTypes.DEFAULT_TYPE):
     convo = "\n".join(HIST)
     prompt = f"Group ki recent baatcheet:\n{convo}\n\nAb is latest msg ka reply do:\n{line}"
     reply = await ask_llm(prompt, bot)
+    if not reply and (to_me or called):
+        await asyncio.sleep(6)
+        reply = await ask_llm(prompt, bot)
     remember(line)
     if not reply:
+        if to_me or called:
+            await msg.reply_text("Ek sec yaar, net slow hai 😅 dobara bolo")
         return
     if reply.lower().startswith(f"{BOT_NAME.lower()}:"):
         reply = reply.split(":", 1)[1].strip()
