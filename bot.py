@@ -103,13 +103,20 @@ async def save_cfg(**kw):
     await cfg_c.update_one({"_id": "cfg"}, {"$set": kw}, upsert=True)
 
 
+async def _save_hist(line: str):
+    try:
+        await hist_c.update_one(
+            {"_id": GROUP_ID},
+            {"$push": {"m": {"$each": [line], "$slice": -HIST_LEN}}},
+            upsert=True,
+        )
+    except Exception as e:
+        print("hist save error:", repr(e))
+
+
 def remember(line: str):
     HIST.append(line)
-    asyncio.create_task(hist_c.update_one(
-        {"_id": GROUP_ID},
-        {"$push": {"m": {"$each": [line], "$slice": -HIST_LEN}}},
-        upsert=True,
-    ))
+    asyncio.create_task(_save_hist(line))
 
 
 def build_system() -> str:
