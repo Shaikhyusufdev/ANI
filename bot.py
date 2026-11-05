@@ -169,7 +169,7 @@ async def ask_llm(prompt: str, bot) -> str | None:
                 COOL[aid] = now + 30
             LAST_ERR[aid] = f"HTTP {code} {e.response.text[:80]}"
         except Exception as e:
-            COOL[aid] = now + 30
+            COOL[aid] = now + 5
             LAST_ERR[aid] = type(e).__name__
     # sab fail: super admin ko 10 min me max 1 alert
     if time.time() - ALERT_AT > 600:
@@ -494,7 +494,7 @@ def run_web():
 
 async def post_init(app: Application):
     global http
-    http = httpx.AsyncClient(timeout=httpx.Timeout(12.0, connect=5.0))
+    http = httpx.AsyncClient(timeout=httpx.Timeout(25.0, connect=5.0))
     await load_cfg()
     await reload_apis()
     doc = await hist_c.find_one({"_id": GROUP_ID})
