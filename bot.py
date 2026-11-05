@@ -167,7 +167,7 @@ async def ask_llm(prompt: str, bot) -> str | None:
                 COOL[aid] = now + 60
             else:
                 COOL[aid] = now + 30
-            LAST_ERR[aid] = f"HTTP {code}"
+                       LAST_ERR[aid] = f"HTTP {code} {e.response.text[:80]}"
         except Exception as e:
             COOL[aid] = now + 30
             LAST_ERR[aid] = type(e).__name__
